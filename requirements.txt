@@ -1,0 +1,7 @@
+networkx
+pandas
+matplotlib
+numpy
+requests
+beautifulsoup4
+jupyter
