@@ -24,23 +24,27 @@ Tout le code se trouve dans le notebook [`PageRank.ipynb`](PageRank.ipynb).
 | 1 | Configuration : URL de départ, domaine autorisé, limite de pages (`MAX_PAGES = 120`), timeout, User-Agent explicite |
 | 2 | Fonctions utilitaires : normalisation d'URL, filtre des liens internes, exclusion des `mailto:`/`tel:`, des fichiers lourds (PDF, images, archives…) et des pages techniques WordPress (connexion, admin, flux RSS) |
 | 3 | Téléchargement des pages avec un délai de politesse aléatoire entre chaque requête |
-| 4 | Extraction des **liens de contenu** uniquement : header, footer, menus et widgets sont retirés pour éviter que la navigation commune à toutes les pages domine le graphe |
-| 5 | Crawl en largeur (BFS) et construction d'un `DiGraph` pondéré |
+| 4 | Extraction de deux types de liens : les **liens de contenu** (zone principale, sans header, footer ni widgets) et les **liens du menu principal** (`header nav` : formations, candidatures, annuaire…) |
+| 5 | Crawl en largeur (BFS) et construction d'un `DiGraph` pondéré : poids 2 pour un lien de contenu, poids 1 pour un lien de menu, présent sur toutes les pages |
 | 6 | Calcul du PageRank pondéré (`alpha = 0.90`) et top 10 des pages |
 | 7 | Visualisation du graphe du site |
 
 ## Exemple de résultat
 
-Sur une exécution d'octobre 2026 (12 pages, 45 liens) :
+Sur une exécution d'octobre 2026 (21 pages, 199 liens) :
 
 ```
 Top 10 PageRank (interne) :
-0.184262  https://ecogestion.univ-spn.fr/taxe-dapprentissage-2026
-0.143387  https://ecogestion.univ-spn.fr/retour-en-images-sur-nos-journees-portes-ouvertes
-0.143387  https://ecogestion.univ-spn.fr/retour-sur-la-ceremonie-des-diplomes-promo-2024
-0.121262  https://ecogestion.univ-spn.fr/classement-eduniversal-des-meilleurs-masters-2026
+0.113385  https://ecogestion.univ-spn.fr/page-portail-master
+0.110515  https://ecogestion.univ-spn.fr/nous-verser-la-taxe
+0.110515  https://ecogestion.univ-spn.fr/page-portail-licence
+0.110515  https://ecogestion.univ-spn.fr/candidatures
 ...
 ```
+
+Les pages du menu principal, liées depuis toutes les pages, dominent le classement. Le portail Master passe devant grâce aux liens de contenu qui pointent vers lui.
+
+Le graphe reste petit parce que les fiches de formation sont hébergées sur un autre domaine (`odf.univ-spn.fr`) ou en PDF : le crawler ne les suit pas.
 
 Les résultats peuvent varier d'une exécution à l'autre selon l'évolution du site.
 
