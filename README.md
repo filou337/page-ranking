@@ -3,7 +3,7 @@
 Projet personnel d'exploration de l'algorithme **PageRank** avec Python et NetworkX, en deux temps :
 
 1. **Graphe aléatoire** — génération et visualisation d'un graphe orienté de type Erdős–Rényi.
-2. **Cas réel** — crawl du site [ecogestion.univ-paris13.fr](https://ecogestion.univ-paris13.fr/) (UFR Économie-Gestion, Université Sorbonne Paris Nord), construction du graphe des liens internes et calcul du PageRank de chaque page.
+2. **Cas réel** — crawl du site [ecogestion.univ-spn.fr](https://ecogestion.univ-spn.fr/) (UFR Économie-Gestion, Université Sorbonne Paris Nord), construction du graphe des liens internes et calcul du PageRank de chaque page.
 
 Tout le code se trouve dans le notebook [`PageRank.ipynb`](PageRank.ipynb).
 
@@ -22,7 +22,7 @@ Tout le code se trouve dans le notebook [`PageRank.ipynb`](PageRank.ipynb).
 |-------|-------------|
 | 0 | Imports (`requests`, `BeautifulSoup`, `networkx`, …) |
 | 1 | Configuration : URL de départ, domaine autorisé, limite de pages (`MAX_PAGES = 120`), timeout, User-Agent explicite |
-| 2 | Fonctions utilitaires : normalisation d'URL, filtre des liens internes, exclusion des `mailto:`/`tel:` et des fichiers lourds (PDF, images, archives…) |
+| 2 | Fonctions utilitaires : normalisation d'URL, filtre des liens internes, exclusion des `mailto:`/`tel:`, des fichiers lourds (PDF, images, archives…) et des pages techniques WordPress (connexion, admin, flux RSS) |
 | 3 | Téléchargement des pages avec un délai de politesse aléatoire entre chaque requête |
 | 4 | Extraction des **liens de contenu** uniquement : header, footer, menus et widgets sont retirés pour éviter que la navigation commune à toutes les pages domine le graphe |
 | 5 | Crawl en largeur (BFS) et construction d'un `DiGraph` pondéré |
@@ -31,14 +31,14 @@ Tout le code se trouve dans le notebook [`PageRank.ipynb`](PageRank.ipynb).
 
 ## Exemple de résultat
 
-Sur une exécution (31 pages, 54 liens), la page la plus centrale ressort nettement :
+Sur une exécution d'octobre 2026 (12 pages, 45 liens) :
 
 ```
 Top 10 PageRank (interne) :
-0.425593  https://ecogestion.univ-paris13.fr/candidatures
-0.021701  https://ecogestion.univ-paris13.fr/masters-formation-initiale-fi
-0.021701  https://ecogestion.univ-paris13.fr/licence
-0.021701  https://ecogestion.univ-paris13.fr/masters-formation-apprentissage-fa
+0.184262  https://ecogestion.univ-spn.fr/taxe-dapprentissage-2026
+0.143387  https://ecogestion.univ-spn.fr/retour-en-images-sur-nos-journees-portes-ouvertes
+0.143387  https://ecogestion.univ-spn.fr/retour-sur-la-ceremonie-des-diplomes-promo-2024
+0.121262  https://ecogestion.univ-spn.fr/classement-eduniversal-des-meilleurs-masters-2026
 ...
 ```
 
@@ -64,7 +64,7 @@ Le crawler est volontairement limité :
 - il reste sur un seul domaine et s'arrête après 120 pages ;
 - il attend entre 0,3 et 0,8 s entre deux requêtes ;
 - il s'identifie avec un User-Agent explicite renvoyant vers GitHub ;
-- il ignore les fichiers lourds (PDF, images, vidéos, documents Office).
+- il ignore les fichiers lourds (PDF, images, vidéos, documents Office) et les pages techniques WordPress.
 
 Si vous l'adaptez à un autre site, vérifiez son `robots.txt` et ses conditions d'utilisation.
 
